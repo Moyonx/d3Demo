@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3.js Bar Chart with Line</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+      .serie rect {
+        stroke: white;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // 示例数据
+      var data = [
+        { question: "Q1", total: 100, correct: 50, wrong: 30, notAnswered: 20 },
+        { question: "Q2", total: 120, correct: 60, wrong: 40, notAnswered: 20 },
+        // 添加更多数据...
+      ];
+      var keys = ["total", "correct", "wrong", "notAnswered"];
+
+      // 创建SVG容器
+      var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", 600)
+        .attr("height", 1000);
+
+      // 定义x和y轴的比例尺
+      var x = d3.scaleBand().range([0, 500]).padding(0.4), // 序数比例尺，处理分类数据，如x轴
+        y = d3.scaleLinear().range([500, 0]), // 线性比例尺，处理连续数据，如y轴
+        z = d3.scaleOrdinal(d3.schemeCategory10); // 序数比例尺，处理分类数据，如颜色编码
+
+      // 设置比例尺的定义域，定义域是数据的范围，值域是像素的范围。比例尺的作用就是将定义域映射到值域
+      // x轴的定义域是问题的名称
+      x.domain(
+        data.map(function (d) {
+          return d.question;
+        })
+      );
+      // y轴的定义域是0到数据中的最大值
+      y.domain([
+        0,
+        d3.max(data, function (d) {
+          return d.total;
+        }),
+      ]);
+      // z轴的定义域是数据的列名
+      z.domain(keys);
+
+      // 定义堆叠柱状图的数据生成器
+      // d3.stack() 会生成一个新的数组，每个元素都是一个数组，代表了一个类别（在这个例子中，类别是 correct, wrong, notAnswered）
+      // 这个数组有一个 key 属性，代表了类别的名称
+      var stack = d3.stack().keys(["correct", "wrong", "notAnswered"]);
+
+      // 定义折线图的数据生成器
+      var line = d3
+        .line()
+        .x(function (d) {
+          // x(d.question) 是数据点在x轴上的位置，x.bandwidth() / 2 是带宽的一半，加上这个值可以让折线在每个柱子的中心位置。
+          return x(d.question) + x.bandwidth() / 2;
+        })
+        .y(function (d) {
+          // d.correct / d.total 是数据点的y值，通过y比例尺转换后得到在y轴上的位置
+          return y(d.correct / 2);
+        });
+
+      // 绘制堆叠柱状图
+      var serie = svg
+        .selectAll(".serie")
+        .data(stack(data)) // stack(data) 将数据转换为堆叠形式，每个元素包含了开始和结束的位置信息。
+        .enter() // 创建了一个“enter”选择集，包含了所有需要添加的元素。
+        .append("g") // g 元素是SVG中的一个容器元素，可以包含其他的SVG元素。
+        .attr("class", "serie") // 设置了每个 g 元素的类名为 serie。
+        .attr("fill", function (d) {
+          // 设置了每个 g 元素的填充颜色。颜色由 z 比例尺根据数据的 key 属性计算得出。key 属性代表了数据的类别（correct, wrong, notAnswered）
+          return z(d.key);
+        });
+
+      serie
+        .selectAll("rect")
+        .data(function (d) {
+          // 这里的 d 是 stack(data) 生成的每个数组，代表了一个类别的所有数据
+          return d;
+        })
+        .enter()
+        .append("rect")
+        .attr("x", function (d) {
+          // 计算每个矩形在x轴上的位置
+          return x(d.data.question);
+        })
+        .attr("y", function (d) {
+          // y(d[1]) 计算了每个矩形在y轴上的位置，d[1] 是堆叠数据中的结束位置。
+          return y(d[1]);
+        })
+        .attr("height", function (d) {
+          // 计算了每个矩形的高度，d[0] 是堆叠数据中的开始位置，d[1] 是结束位置。
+          return y(d[0]) - y(d[1]);
+        })
+        // x.bandwidth() 返回了x轴的带宽，即每个柱子的宽度。
+        .attr("width", x.bandwidth());
+
+      // 绘制折线图
+      svg
+        .append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue") // 描边颜色
+        .attr("stroke-linejoin", "round") // 线段连接方式
+        .attr("stroke-linecap", "round") // 线段结束方式
+        .attr("stroke-width", 1.5) // 描边宽度
+        .attr("d", line); // 路径数据，line 是一个折线生成器，会根据绑定的数据生成路径数据。
+
+      // 添加坐标轴
+      svg
+        .append("g")
+        .attr("transform", "translate(0," + 500 + ")")
+        .call(d3.axisBottom(x));
+
+      svg.append("g").call(d3.axisLeft(y));
+    </script>
+  </body>
+</html>

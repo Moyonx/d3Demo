@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>D3.js Combined Chart (Bar + Scatter with Pie)</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      .link {
+        stroke: #999;
+        stroke-opacity: 0.6;
+        stroke-width: 2;
+      }
+      .bar {
+        fill: steelblue;
+      }
+      .link {
+        stroke: orange;
+        stroke-width: 1.5px;
+        opacity: 0.6; /* Slightly transparent */
+      }
+      .x-axis-h1 .domain {
+        stroke-width: 2px; /* H1的x轴加粗 */
+        stroke: black;
+      }
+      .x-axis-labels text {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="800" height="700"></svg>
+    <script>
+      const width = 800;
+      const height = 700;
+      const margin = { top: 20, right: 50, bottom: 50, left: 50 };
+      const barHeight = 100; // H2 柱状图的高度
+      const scatterHeight =
+        height - barHeight - margin.top - margin.bottom - 50; // H1 的高度 (加上 x 轴的高度)
+
+      // 1. 准备数据
+      const data = [
+        { id: "A", x: 100, y: 150, pieData: [30, 20, 50], barValue: 40 },
+        { id: "B", x: 300, y: 300, pieData: [20, 30, 50], barValue: 60 },
+        { id: "C", x: 500, y: 200, pieData: [10, 40, 50], barValue: 80 },
+        { id: "D", x: 700, y: 400, pieData: [50, 10, 40], barValue: 30 },
+      ];
+
+      const links = [
+        { source: "A", target: "B" },
+        { source: "A", target: "C" },
+        { source: "B", target: "D" },
+      ];
+
+      const svg = d3.select("svg").attr("width", width).attr("height", height);
+
+      // 2. 创建 X 和 Y 轴的缩放比例
+      const xScale = d3
+        .scaleLinear()
+        .domain([0, d3.max(data, (d) => d.x) + 50])
+        .range([margin.left, width - margin.right]);
+
+      const yScaleScatter = d3
+        .scaleLinear()
+        .domain([0, d3.max(data, (d) => d.y) + 50])
+        .range([height - margin.bottom - 50, barHeight + margin.top]); // H1 的 Y 轴
+
+      const yScaleBar = d3
+        .scaleLinear()
+        .domain([0, d3.max(data, (d) => d.barValue)])
+        .range([barHeight, 0]); // H2 的 Y 轴
+
+      // 3. 添加柱状图 H2
+      const barGroup = svg
+        .append("g") // 添加组元素
+        .attr("transform", `translate(0, ${margin.top})`); // 柱状图位置，下移 margin.top
+
+      barGroup
+        // 选择组元素中的所有具有类名为 bar 的元素，然后将数据绑定到这些元素，最后通过 enter 方法为每个数据项创建一个新的元素。
+        .selectAll(".bar")
+        .data(data)
+        .enter()
+        // 在每个数据项的元素中添加了一个矩形元素，用于绘制柱子
+        .append("rect")
+        // 设置了矩形元素的类名为 bar
+        .attr("class", "bar")
+        .attr("x", (d) => xScale(d.x) - 20) // 矩形左上角的 x 坐标
+        .attr("y", (d) => yScaleBar(d.barValue)) // 矩形左上角的 y 坐标
+        .attr("width", 40) // 每个柱子的宽度
+        .attr("height", (d) => barHeight - yScaleBar(d.barValue));
+
+      // 4. 绘制 H1 的 X 轴（在图的上方，并加粗，刻度朝上）
+      const xAxisTopH1 = d3.axisTop(xScale).ticks(5); // H1 的 x 轴在顶部
+
+      svg
+        .append("g")
+        .attr("class", "x-axis-h1") // 给 H1 的 x 轴加粗
+        .attr(
+          "transform",
+          `translate(0, ${height - scatterHeight - margin.bottom - 50})`
+        )
+        .call(xAxisTopH1);
+
+      // 5. 绘制 H1 的 Y 轴
+      const yAxisH1 = d3.axisLeft(yScaleScatter); // H1 的 y 轴在左边
+
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left}, 0)`)
+        .call(yAxisH1);
+
+      // 6. 绘制 H2 的 X 轴（刻度向下，但隐藏刻度标签，只显示刻度线）
+      const xAxisBottomH2 = d3.axisBottom(xScale).ticks(5); // H2 的 x 轴
+
+      svg
+        .append("g")
+        .attr("class", "x-axis-h2")
+        .attr("transform", `translate(0, ${barHeight + margin.top + 20})`) // 放置在H2的下方
+        .call(xAxisBottomH2)
+        .selectAll("text")
+        .remove(); // 移除 H2 的刻度标签，只保留刻度线
+
+      // 7. 在 H1 和 H2 之间绘制共享的刻度值
+      svg
+        .append("g")
+        .attr("class", "x-axis-labels")
+        .attr("transform", `translate(0, ${barHeight + margin.top + 5})`) // 放在两者之间
+        .call(d3.axisBottom(xScale).ticks(5).tickSize(0)); // 仅显示刻度标签，不显示刻度线
+
+      // 8. 绘制知识图谱连线 (H1)
+      const link = svg
+        .selectAll(".link")
+        .data(links)
+        .enter()
+        .append("line")
+        .attr("class", "link")
+        .attr("x1", (d) => xScale(data.find((n) => n.id === d.source).x))
+        .attr("y1", (d) => yScaleScatter(data.find((n) => n.id === d.source).y))
+        .attr("x2", (d) => xScale(data.find((n) => n.id === d.target).x))
+        .attr("y2", (d) =>
+          yScaleScatter(data.find((n) => n.id === d.target).y)
+        );
+
+      // 9. 绘制点状图中的饼图 (H1)
+      const pie = d3.pie();
+      const arc = d3.arc().innerRadius(0).outerRadius(20); // 饼图半径为20
+
+      // 创建点元素
+      const node = svg
+        .selectAll(".node")
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr(
+          "transform",
+          (d) => `translate(${xScale(d.x)}, ${yScaleScatter(d.y)})`
+        );
+
+      // 为每个点绘制饼图
+      node.each(function (d) {
+        const arcs = pie(d.pieData);
+
+        d3.select(this)
+          .selectAll(".arc")
+          .data(arcs)
+          .enter()
+          .append("path")
+          .attr("class", "arc")
+          .attr("d", arc)
+          .attr("fill", (d, i) => d3.schemeCategory10[i]); // 使用 D3 默认颜色
+      });
+
+      // 添加标签（点的ID）
+      node
+        .append("text")
+        .attr("dy", -30)
+        .attr("text-anchor", "middle")
+        .text((d) => d.id);
+    </script>
+  </body>
+</html>
