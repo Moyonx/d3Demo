@@ -1,123 +1,185 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=bar-stack&lang=js
+-->
 <!DOCTYPE html>
-<html>
+<html lang="en" style="height: 100%">
   <head>
-    <title>D3.js Bar Chart with Line</title>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <style>
-      .serie rect {
-        stroke: white;
-      }
-    </style>
+    <meta charset="utf-8" />
   </head>
-  <body>
-    <script>
-      // 示例数据
-      var data = [
-        { question: "Q1", total: 100, correct: 50, wrong: 30, notAnswered: 20 },
-        { question: "Q2", total: 120, correct: 60, wrong: 40, notAnswered: 20 },
-        // 添加更多数据...
-      ];
-      var keys = ["total", "correct", "wrong", "notAnswered"];
+  <body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
 
-      // 创建SVG容器
-      var svg = d3
-        .select("body")
-        .append("svg")
-        .attr("width", 600)
-        .attr("height", 1000);
+    <script
+      type="text/javascript"
+      src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"
+    ></script>
 
-      // 定义x和y轴的比例尺
-      var x = d3.scaleBand().range([0, 500]).padding(0.4), // 序数比例尺，处理分类数据，如x轴
-        y = d3.scaleLinear().range([500, 0]), // 线性比例尺，处理连续数据，如y轴
-        z = d3.scaleOrdinal(d3.schemeCategory10); // 序数比例尺，处理分类数据，如颜色编码
+    <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/extension/dataTool.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-gl/2/files/dist/echarts-gl.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-stat/latest/files/dist/ecStat.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-graph-modularity extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-graph-modularity/2/files/dist/echarts-graph-modularity.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/world.js"></script>
+  -->
+    <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/extension/bmap.min.js"></script>
+  -->
 
-      // 设置比例尺的定义域，定义域是数据的范围，值域是像素的范围。比例尺的作用就是将定义域映射到值域
-      // x轴的定义域是问题的名称
-      x.domain(
-        data.map(function (d) {
-          return d.question;
-        })
-      );
-      // y轴的定义域是0到数据中的最大值
-      y.domain([
-        0,
-        d3.max(data, function (d) {
-          return d.total;
-        }),
-      ]);
-      // z轴的定义域是数据的列名
-      z.domain(keys);
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var app = {};
 
-      // 定义堆叠柱状图的数据生成器
-      // d3.stack() 会生成一个新的数组，每个元素都是一个数组，代表了一个类别（在这个例子中，类别是 correct, wrong, notAnswered）
-      // 这个数组有一个 key 属性，代表了类别的名称
-      var stack = d3.stack().keys(["correct", "wrong", "notAnswered"]);
+      var option;
 
-      // 定义折线图的数据生成器
-      var line = d3
-        .line()
-        .x(function (d) {
-          // x(d.question) 是数据点在x轴上的位置，x.bandwidth() / 2 是带宽的一半，加上这个值可以让折线在每个柱子的中心位置。
-          return x(d.question) + x.bandwidth() / 2;
-        })
-        .y(function (d) {
-          // d.correct / d.total 是数据点的y值，通过y比例尺转换后得到在y轴上的位置
-          return y(d.correct / 2);
-        });
+      option = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {
+          data: [
+            "总提交量",
+            "答案正确总量",
+            "格式错误总量",
+            "答案错误总量",
+            "时间超限总量",
+            "运行错误总量",
+            "编译错误总量",
+            "内存超限总量",
+            "输出超限总量",
+            "正确率",
+          ],
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+          },
+        ],
+        yAxis: [
+          {
+            type: "value",
+            name: "数量",
+          },
+          {
+            type: "value",
+            name: "正确率",
+            min: 0,
+            max: 1,
+            interval: 0.1,
+            axisLabel: {
+              formatter: "{value}",
+            },
+          },
+        ],
+        series: [
+          {
+            name: "答案正确总量",
+            type: "bar",
+            stack: "总量",
+            data: [120, 132, 101, 134, 90, 230, 210],
+            itemStyle: {
+              color: "#91CC75",
+            },
+          },
+          {
+            name: "格式错误总量",
+            type: "bar",
+            stack: "总量",
+            data: [220, 182, 191, 234, 290, 330, 310],
+            itemStyle: {
+              color: "#FAC858",
+            },
+          },
+          {
+            name: "答案错误总量",
+            type: "bar",
+            stack: "总量",
+            data: [150, 232, 201, 154, 190, 330, 410],
+            itemStyle: {
+              color: "#EE6666",
+            },
+          },
+          {
+            name: "时间超限总量",
+            type: "bar",
+            stack: "总量",
+            data: [862, 1018, 964, 1026, 1679, 1600, 1570],
+            itemStyle: {
+              color: "#73C0DE",
+            },
+          },
+          {
+            name: "运行错误总量",
+            type: "bar",
+            stack: "总量",
+            data: [620, 732, 701, 734, 1090, 1130, 1120],
+            itemStyle: {
+              color: "#3BA272",
+            },
+          },
+          {
+            name: "编译错误总量",
+            type: "bar",
+            stack: "总量",
+            data: [120, 132, 101, 134, 290, 230, 210],
+            itemStyle: {
+              color: "#FC8452",
+            },
+          },
+          {
+            name: "内存超限总量",
+            type: "bar",
+            stack: "总量",
+            data: [220, 182, 191, 234, 290, 330, 310],
+            itemStyle: {
+              color: "#9A60B4",
+            },
+          },
+          {
+            name: "输出超限总量",
+            type: "bar",
+            stack: "总量",
+            data: [150, 232, 201, 154, 190, 330, 410],
+            itemStyle: {
+              color: "#EA7CCC",
+            },
+          },
+          {
+            name: "正确率",
+            type: "line",
+            yAxisIndex: 1,
+            data: [0.375, 0.397, 0.335, 0.401, 0.231, 0.697, 0.656],
+          },
+        ],
+      };
 
-      // 绘制堆叠柱状图
-      var serie = svg
-        .selectAll(".serie")
-        .data(stack(data)) // stack(data) 将数据转换为堆叠形式，每个元素包含了开始和结束的位置信息。
-        .enter() // 创建了一个“enter”选择集，包含了所有需要添加的元素。
-        .append("g") // g 元素是SVG中的一个容器元素，可以包含其他的SVG元素。
-        .attr("class", "serie") // 设置了每个 g 元素的类名为 serie。
-        .attr("fill", function (d) {
-          // 设置了每个 g 元素的填充颜色。颜色由 z 比例尺根据数据的 key 属性计算得出。key 属性代表了数据的类别（correct, wrong, notAnswered）
-          return z(d.key);
-        });
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
 
-      serie
-        .selectAll("rect")
-        .data(function (d) {
-          // 这里的 d 是 stack(data) 生成的每个数组，代表了一个类别的所有数据
-          return d;
-        })
-        .enter()
-        .append("rect")
-        .attr("x", function (d) {
-          // 计算每个矩形在x轴上的位置
-          return x(d.data.question);
-        })
-        .attr("y", function (d) {
-          // y(d[1]) 计算了每个矩形在y轴上的位置，d[1] 是堆叠数据中的结束位置。
-          return y(d[1]);
-        })
-        .attr("height", function (d) {
-          // 计算了每个矩形的高度，d[0] 是堆叠数据中的开始位置，d[1] 是结束位置。
-          return y(d[0]) - y(d[1]);
-        })
-        // x.bandwidth() 返回了x轴的带宽，即每个柱子的宽度。
-        .attr("width", x.bandwidth());
-
-      // 绘制折线图
-      svg
-        .append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue") // 描边颜色
-        .attr("stroke-linejoin", "round") // 线段连接方式
-        .attr("stroke-linecap", "round") // 线段结束方式
-        .attr("stroke-width", 1.5) // 描边宽度
-        .attr("d", line); // 路径数据，line 是一个折线生成器，会根据绑定的数据生成路径数据。
-
-      // 添加坐标轴
-      svg
-        .append("g")
-        .attr("transform", "translate(0," + 500 + ")")
-        .call(d3.axisBottom(x));
-
-      svg.append("g").call(d3.axisLeft(y));
+      window.addEventListener("resize", myChart.resize);
     </script>
   </body>
 </html>
