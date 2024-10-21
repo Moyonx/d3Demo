@@ -1,3 +1,6 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=gauge-speed
+-->
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
   <head>
@@ -11,6 +14,294 @@
       src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"
     ></script>
 
-    <script type="text/javascript"></script>
+    <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/extension/dataTool.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-gl/2/files/dist/echarts-gl.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-stat/latest/files/dist/ecStat.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-graph-modularity extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-graph-modularity/2/files/dist/echarts-graph-modularity.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/world.js"></script>
+  -->
+    <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/extension/bmap.min.js"></script>
+  -->
+
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var app = {};
+
+      const days = [
+        "10.1",
+        "10.2",
+        "10.3",
+        "10.4",
+        "10.5",
+        "10.6",
+        "10.7",
+        "10.8",
+        "10.9",
+        "10.10",
+        "10.11",
+        "10.12",
+        "10.13",
+        "10.14",
+      ];
+      // prettier-ignore
+      const titles = [
+    'T1', 'T2', 'T3'
+];
+      // prettier-ignore
+      const data = [
+        [0, 0, 5], 
+        [0, 1, 10], 
+        [0, 2, 3], [1, 0, 7], [1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 4, 0], [1, 5, 0], [1, 6, 0], [1, 7, 0], [1, 8, 0], [1, 9, 0], [1, 10, 5], [1, 11, 2], [1, 12, 2], [1, 13, 6], [2, 0, 1], [2, 1, 1], [2, 2, 0], [2, 3, 0], [2, 4, 0], [2, 5, 0], [2, 6, 0], [2, 7, 0], [2, 8, 0], [2, 9, 0], [2, 10, 3], [2, 11, 2], [2, 12, 1], [2, 13, 9], 
+      ];
+
+      var option;
+
+      // 上半部分仪表盘配置
+      var gaugeOption = {
+        series: [
+          // 第一层
+          {
+            type: "gauge",
+            startAngle: 180, // 起始角度
+            endAngle: 0, // 结束角度
+            radius: "60%", // 内层仪表盘的半径
+            //center: ["50%", "25%"], // 仪表盘位置
+            progress: {
+              show: true, // 显示进度条
+              width: 18,
+            },
+            axisLine: {
+              lineStyle: {
+                width: 18, // 轴线宽度
+              },
+            },
+            axisTick: {
+              show: true, // 显示刻度线
+            },
+            splitLine: {
+              length: 15, // 分割线长度
+              lineStyle: {
+                width: 2,
+                color: "#999",
+              },
+            },
+            axisLabel: {
+              distance: 25, // 标签与轴线的距离
+              color: "#999",
+              fontSize: 20,
+            },
+            pointer: {
+              show: false, // 隐藏指针
+            },
+            anchor: {
+              show: false,
+            },
+            title: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+            data: [
+              {
+                value: 70,
+              },
+            ],
+          },
+          // 第二层
+          {
+            type: "gauge",
+            startAngle: 180,
+            endAngle: 0,
+            radius: "80%", // 外层仪表盘的半径
+            progress: {
+              show: true,
+              width: 18,
+            },
+            axisLine: {
+              lineStyle: {
+                width: 18,
+              },
+            },
+            axisTick: {
+              show: false, // 隐藏外层的刻度线
+            },
+            splitLine: {
+              length: 15,
+              lineStyle: {
+                width: 2,
+                color: "#999",
+              },
+            },
+            axisLabel: {
+              show: false, // 隐藏外层的刻度标签
+            },
+            pointer: {
+              show: false, // 隐藏指针
+            },
+            anchor: {
+              show: false,
+            },
+            title: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+            data: [
+              {
+                value: 50,
+              },
+            ],
+          },
+          // 第三层
+          {
+            type: "gauge",
+            startAngle: 180,
+            endAngle: 0,
+            radius: "100%", // 外层仪表盘的半径
+            progress: {
+              show: true,
+              width: 18,
+            },
+            axisLine: {
+              lineStyle: {
+                width: 18,
+              },
+            },
+            axisTick: {
+              show: false, // 隐藏外层的刻度线
+            },
+            splitLine: {
+              length: 15,
+              lineStyle: {
+                width: 2,
+                color: "#999",
+              },
+            },
+            axisLabel: {
+              show: false, // 隐藏外层的刻度标签
+            },
+            pointer: {
+              show: false, // 隐藏指针
+            },
+            anchor: {
+              show: false,
+            },
+            title: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+            data: [
+              {
+                value: 50,
+              },
+            ],
+          },
+        ],
+      };
+
+      // 下半部分散点图配置
+      var scatterOption = {
+        grid: {
+          top: "50%", // 散点图位置
+        },
+        // 图例配置
+        legend: {
+          data: ["Punch Card"],
+          left: "right",
+        },
+        // 极坐标系配置
+        polar: {
+          radius: ["47%", "110%"], // 调整内外半径
+        },
+        // 提示框组件的配置项
+        tooltip: {
+          formatter: function (params) {
+            // 显示提交次数和对应的时间
+            return (
+              params.value[2] +
+              " pass on " +
+              days[params.value[1]] +
+              " of " +
+              titles[params.value[0]]
+            );
+          },
+        },
+        angleAxis: {
+          type: "category", // 类目轴
+          data: days, // 角度轴的数据
+          boundaryGap: false, // 不留空隙
+          splitLine: {
+            show: true, // 显示分割线
+          },
+          axisLine: {
+            show: false, // 隐藏轴线
+          },
+          startAngle: 180,
+          endAngle: 334.5,
+        },
+        radiusAxis: {
+          type: "category", // 类目轴
+          data: titles, // 半径轴的数据
+          axisLine: {
+            show: false, // 隐藏轴线
+          },
+          axisLabel: {
+            rotate: 45, // 标签旋转角度
+          },
+        },
+        series: [
+          {
+            name: "Punch Card",
+            type: "scatter",
+            coordinateSystem: "polar",
+            // 符号大小的回调函数，根据数据值计算符号大小
+            symbolSize: function (val) {
+              return val[2] * 2;
+            },
+            data: data,
+            // 动画延迟的回调函数，根据索引计算延迟时间
+            animationDelay: function (idx) {
+              return idx * 5;
+            },
+          },
+        ],
+      };
+
+      // 合并配置
+      option = {
+        series: [...gaugeOption.series, ...scatterOption.series],
+        grid: scatterOption.grid,
+        legend: scatterOption.legend,
+        polar: scatterOption.polar,
+        tooltip: scatterOption.tooltip,
+        angleAxis: scatterOption.angleAxis,
+        radiusAxis: scatterOption.radiusAxis,
+      };
+
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
+
+      window.addEventListener("resize", myChart.resize);
+    </script>
   </body>
 </html>

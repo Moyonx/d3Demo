@@ -1,0 +1,234 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=themeRiver-basic
+-->
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
+
+    <script
+      type="text/javascript"
+      src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"
+    ></script>
+
+    <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/extension/dataTool.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-gl/2/files/dist/echarts-gl.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-stat/latest/files/dist/ecStat.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-graph-modularity extension
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-graph-modularity/2/files/dist/echarts-graph-modularity.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/world.js"></script>
+  -->
+    <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/extension/bmap.min.js"></script>
+  -->
+
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var app = {};
+
+      var option;
+
+      option = {
+        tooltip: {
+          trigger: "axis", // 坐标轴触发
+          axisPointer: {
+            type: "line", // 坐标轴指示器类型为直线
+            lineStyle: {
+              color: "rgba(0,0,0,0.2)",
+              width: 1,
+              type: "solid", // 实线
+            },
+          },
+        },
+        // 设置图例组件
+        legend: {
+          data: ["T1", "T2", "T3", "T4", "T5", "T6"],
+        },
+        // 单轴配置
+        singleAxis: {
+          top: 50,
+          bottom: 50,
+          axisTick: {},
+          axisLabel: {},
+          type: "time", // 时间轴
+          // 轴指示器
+          axisPointer: {
+            animation: true,
+            label: {
+              show: true,
+            },
+          },
+          // 分隔线
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: "dashed",
+              opacity: 0.2,
+            },
+          },
+        },
+        series: [
+          {
+            type: "themeRiver",
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 20,
+                shadowColor: "rgba(0, 0, 0, 0.8)",
+              },
+            },
+            data: [
+              ["2024/10/08", 10, "T1"],
+              ["2024/10/09", 15, "T1"],
+              ["2024/10/10", 35, "T1"],
+              ["2024/10/11", 38, "T1"],
+              ["2024/10/12", 22, "T1"],
+              ["2024/10/13", 16, "T1"],
+              ["2024/10/14", 7, "T1"],
+              ["2024/10/15", 2, "T1"],
+              ["2024/10/16", 17, "T1"],
+              ["2024/10/17", 33, "T1"],
+              ["2024/10/18", 40, "T1"],
+              ["2024/10/19", 32, "T1"],
+              ["2024/10/20", 26, "T1"],
+              ["2024/10/21", 35, "T1"],
+              ["2024/10/22", 40, "T1"],
+              ["2024/10/23", 32, "T1"],
+              ["2024/10/24", 26, "T1"],
+              ["2024/10/25", 22, "T1"],
+              ["2024/10/26", 16, "T1"],
+              ["2024/10/27", 22, "T1"],
+              ["2024/10/28", 10, "T1"],
+              ["2024/10/08", 35, "T2"],
+              ["2024/10/09", 36, "T2"],
+              ["2024/10/10", 37, "T2"],
+              ["2024/10/11", 22, "T2"],
+              ["2024/10/12", 24, "T2"],
+              ["2024/10/13", 26, "T2"],
+              ["2024/10/14", 34, "T2"],
+              ["2024/10/15", 21, "T2"],
+              ["2024/10/16", 18, "T2"],
+              ["2024/10/17", 45, "T2"],
+              ["2024/10/18", 32, "T2"],
+              ["2024/10/19", 35, "T2"],
+              ["2024/10/20", 30, "T2"],
+              ["2024/10/21", 28, "T2"],
+              ["2024/10/22", 27, "T2"],
+              ["2024/10/23", 26, "T2"],
+              ["2024/10/24", 15, "T2"],
+              ["2024/10/25", 30, "T2"],
+              ["2024/10/26", 35, "T2"],
+              ["2024/10/27", 42, "T2"],
+              ["2024/10/28", 42, "T2"],
+              ["2024/10/08", 21, "T3"],
+              ["2024/10/09", 25, "T3"],
+              ["2024/10/10", 27, "T3"],
+              ["2024/10/11", 23, "T3"],
+              ["2024/10/12", 24, "T3"],
+              ["2024/10/13", 21, "T3"],
+              ["2024/10/14", 35, "T3"],
+              ["2024/10/15", 39, "T3"],
+              ["2024/10/16", 40, "T3"],
+              ["2024/10/17", 36, "T3"],
+              ["2024/10/18", 33, "T3"],
+              ["2024/10/19", 43, "T3"],
+              ["2024/10/20", 40, "T3"],
+              ["2024/10/21", 34, "T3"],
+              ["2024/10/22", 28, "T3"],
+              ["2024/10/23", 26, "T3"],
+              ["2024/10/24", 37, "T3"],
+              ["2024/10/25", 41, "T3"],
+              ["2024/10/26", 46, "T3"],
+              ["2024/10/27", 47, "T3"],
+              ["2024/10/28", 41, "T3"],
+              ["2024/10/08", 10, "T4"],
+              ["2024/10/09", 15, "T4"],
+              ["2024/10/10", 35, "T4"],
+              ["2024/10/11", 38, "T4"],
+              ["2024/10/12", 22, "T4"],
+              ["2024/10/13", 16, "T4"],
+              ["2024/10/14", 7, "T4"],
+              ["2024/10/15", 2, "T4"],
+              ["2024/10/16", 17, "T4"],
+              ["2024/10/17", 33, "T4"],
+              ["2024/10/18", 40, "T4"],
+              ["2024/10/19", 32, "T4"],
+              ["2024/10/20", 26, "T4"],
+              ["2024/10/21", 35, "T4"],
+              ["2024/10/22", 40, "T4"],
+              ["2024/10/23", 32, "T4"],
+              ["2024/10/24", 26, "T4"],
+              ["2024/10/25", 22, "T4"],
+              ["2024/10/26", 16, "T4"],
+              ["2024/10/27", 22, "T4"],
+              ["2024/10/28", 10, "T4"],
+              ["2024/10/08", 10, "T5"],
+              ["2024/10/09", 15, "T5"],
+              ["2024/10/10", 35, "T5"],
+              ["2024/10/11", 38, "T5"],
+              ["2024/10/12", 22, "T5"],
+              ["2024/10/13", 16, "T5"],
+              ["2024/10/14", 7, "T5"],
+              ["2024/10/15", 2, "T5"],
+              ["2024/10/16", 17, "T5"],
+              ["2024/10/17", 33, "T5"],
+              ["2024/10/18", 40, "T5"],
+              ["2024/10/19", 32, "T5"],
+              ["2024/10/20", 26, "T5"],
+              ["2024/10/21", 35, "T5"],
+              ["2024/10/22", 4, "T5"],
+              ["2024/10/23", 32, "T5"],
+              ["2024/10/24", 26, "T5"],
+              ["2024/10/25", 22, "T5"],
+              ["2024/10/26", 16, "T5"],
+              ["2024/10/27", 22, "T5"],
+              ["2024/10/28", 10, "T5"],
+              ["2024/10/08", 10, "T6"],
+              ["2024/10/09", 15, "T6"],
+              ["2024/10/10", 35, "T6"],
+              ["2024/10/11", 38, "T6"],
+              ["2024/10/12", 22, "T6"],
+              ["2024/10/13", 16, "T6"],
+              ["2024/10/14", 7, "T6"],
+              ["2024/10/15", 2, "T6"],
+              ["2024/10/16", 17, "T6"],
+              ["2024/10/17", 33, "T6"],
+              ["2024/10/18", 4, "T6"],
+              ["2024/10/19", 32, "T6"],
+              ["2024/10/20", 26, "T6"],
+              ["2024/10/21", 35, "T6"],
+              ["2024/10/22", 40, "T6"],
+              ["2024/10/23", 32, "T6"],
+              ["2024/10/24", 26, "T6"],
+              ["2024/10/25", 22, "T6"],
+              ["2024/10/26", 16, "T6"],
+              ["2024/10/27", 22, "T6"],
+              ["2024/10/28", 10, "T6"],
+            ],
+          },
+        ],
+      };
+
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
+
+      window.addEventListener("resize", myChart.resize);
+    </script>
+  </body>
+</html>
