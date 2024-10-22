@@ -231,6 +231,8 @@
         // 极坐标系配置
         polar: {
           radius: ["47%", "110%"], // 调整内外半径
+          shadowBlur: 100, // 添加阴影模糊
+          shadowColor: "rgba(0, 0, 0, 0.8)", // 阴影颜色
         },
         // 提示框组件的配置项
         tooltip: {
@@ -254,6 +256,9 @@
           },
           axisLine: {
             show: false, // 隐藏轴线
+          },
+          axisLabel: {
+            inside: true, // 将标签显示在内侧
           },
           startAngle: 180,
           endAngle: 334.5,
@@ -286,9 +291,106 @@
         ],
       };
 
+      // 添加下半部分的背景环
+      var backgroundRingOption = {
+        series: [
+          // 第一层
+          {
+            type: "gauge",
+            startAngle: 0,
+            endAngle: -180,
+            radius: "60%",
+            center: ["50%", "50%"], // 背景环位置
+            axisLine: {
+              lineStyle: {
+                width: 18,
+                color: [[1, "rgba(0, 0, 0, 0.1)"]], // 更淡的颜色
+              },
+            },
+            splitLine: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            pointer: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+          },
+          // 第二层
+          {
+            type: "gauge",
+            startAngle: 0,
+            endAngle: -180,
+            radius: "80%",
+            center: ["50%", "50%"], // 背景环位置
+            axisLine: {
+              lineStyle: {
+                width: 18,
+                color: [[1, "rgba(0, 0, 0, 0.1)"]], // 更淡的颜色
+              },
+            },
+            splitLine: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            pointer: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+          },
+          // 第三层
+          {
+            type: "gauge",
+            startAngle: 0,
+            endAngle: -180,
+            radius: "100%",
+            center: ["50%", "50%"], // 背景环位置
+            axisLine: {
+              lineStyle: {
+                width: 18,
+                color: [[1, "rgba(0, 0, 0, 0.1)"]], // 更淡的颜色
+              },
+            },
+            splitLine: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            pointer: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+          },
+        ],
+      };
+
       // 合并配置
       option = {
-        series: [...gaugeOption.series, ...scatterOption.series],
+        series: [
+          ...backgroundRingOption.series,
+          ...gaugeOption.series,
+          ...scatterOption.series,
+        ],
         grid: scatterOption.grid,
         legend: scatterOption.legend,
         polar: scatterOption.polar,
