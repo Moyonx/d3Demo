@@ -63,10 +63,39 @@
     'T1', 'T2', 'T3'
 ];
       // prettier-ignore
+      // 数据顺序分别为：题目、日期、提交数、通过数
       const data = [
-        [0, 0, 5], 
-        [0, 1, 10], 
-        [0, 2, 3], [1, 0, 7], [1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 4, 0], [1, 5, 0], [1, 6, 0], [1, 7, 0], [1, 8, 0], [1, 9, 0], [1, 10, 5], [1, 11, 2], [1, 12, 2], [1, 13, 6], [2, 0, 1], [2, 1, 1], [2, 2, 0], [2, 3, 0], [2, 4, 0], [2, 5, 0], [2, 6, 0], [2, 7, 0], [2, 8, 0], [2, 9, 0], [2, 10, 3], [2, 11, 2], [2, 12, 1], [2, 13, 9], 
+        [0, 0, 5, 4], 
+        [0, 1, 10, 10], 
+        [0, 2, 3, 1], 
+        [1, 0, 7, 7], 
+        [1, 1, 0, 0], 
+        [1, 2, 0, 0], 
+        [1, 3, 0, 0], 
+        [1, 4, 0, 0], 
+        [1, 5, 0, 0], 
+        [1, 6, 0, 0], 
+        [1, 7, 0, 0], 
+        [1, 8, 0, 0], 
+        [1, 9, 0, 0], 
+        [1, 10, 5, 0], 
+        [1, 11, 2, 0], 
+        [1, 12, 2, 2], 
+        [1, 13, 6, 6], 
+        [2, 0, 1, 0], 
+        [2, 1, 1, 0], 
+        [2, 2, 0, 0], 
+        [2, 3, 0, 0], 
+        [2, 4, 0, 0], 
+        [2, 5, 0, 0], 
+        [2, 6, 0, 0], 
+        [2, 7, 0, 0], 
+        [2, 8, 0, 0], 
+        [2, 9, 0, 0], 
+        [2, 10, 3, 2], 
+        [2, 11, 2, 0], 
+        [2, 12, 1, 0], 
+        [2, 13, 9, 8], 
       ];
 
       var option;
@@ -218,6 +247,9 @@
         ],
       };
 
+      // 计算data中第三个数据的最大值
+      const maxDataValue = Math.max(...data.map((item) => item[2]));
+
       // 下半部分散点图配置
       var scatterOption = {
         grid: {
@@ -240,7 +272,9 @@
             // 显示提交次数和对应的时间
             return (
               params.value[2] +
-              " commit on " +
+              " commit, " +
+              params.value[3] +
+              " pass on " +
               days[params.value[1]] +
               " of " +
               titles[params.value[0]]
@@ -258,10 +292,10 @@
             show: false, // 隐藏轴线
           },
           axisLabel: {
-            inside: true, // 将标签显示在内侧
+            alignWithLabel: false, // 设置标签显示在轴线的另一端
           },
-          startAngle: 180,
-          endAngle: 334.5,
+          startAngle: 185, // 180
+          endAngle: 329.5, // 334.5
         },
         radiusAxis: {
           type: "category", // 类目轴
@@ -289,6 +323,14 @@
             },
           },
         ],
+        visualMap: {
+          min: 0,
+          max: maxDataValue,
+          dimension: 3,
+          inRange: {
+            color: ["#FF0000", "#FFFF00", "#008000"],
+          },
+        },
       };
 
       // 添加下半部分的背景环
@@ -304,7 +346,7 @@
             axisLine: {
               lineStyle: {
                 width: 18,
-                color: [[1, "rgba(0, 0, 0, 0.1)"]], // 更淡的颜色
+                color: [[1, "rgba(0, 0, 0, 0.03)"]], // 更淡的颜色
               },
             },
             splitLine: {
@@ -333,7 +375,7 @@
             axisLine: {
               lineStyle: {
                 width: 18,
-                color: [[1, "rgba(0, 0, 0, 0.1)"]], // 更淡的颜色
+                color: [[1, "rgba(0, 0, 0, 0.03)"]], // 更淡的颜色
               },
             },
             splitLine: {
@@ -362,7 +404,7 @@
             axisLine: {
               lineStyle: {
                 width: 18,
-                color: [[1, "rgba(0, 0, 0, 0.1)"]], // 更淡的颜色
+                color: [[1, "rgba(0, 0, 0, 0.03)"]], // 更淡的颜色
               },
             },
             splitLine: {
@@ -397,6 +439,7 @@
         tooltip: scatterOption.tooltip,
         angleAxis: scatterOption.angleAxis,
         radiusAxis: scatterOption.radiusAxis,
+        visualMap: scatterOption.visualMap,
       };
 
       if (option && typeof option === "object") {
